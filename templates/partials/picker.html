@@ -1,0 +1,58 @@
+<div class="text-center space-y-4">
+    <h2 class="font-black text-xl uppercase" id="picker-title">{{ t("picker.picking") }}</h2>
+    <p class="text-sm text-[#555]" id="picker-subtitle">{{ t("picker.shaking") }}</p>
+
+    <div class="flex justify-center py-4">
+        <div class="inline-block bg-[#e9c46a] neo-tag px-6 py-4">
+            <span id="spin-text" class="text-2xl font-black">{{ activity.name }}</span>
+        </div>
+    </div>
+
+    <div id="picker-actions" class="hidden flex-col sm:flex-row gap-2 pt-2">
+        <button hx-put="/activities/{{ activity.id }}/toggle"
+                hx-target="#activities-container"
+                hx-swap="innerHTML"
+                onclick="document.getElementById('picker-dialog').close()"
+                class="neo-btn bg-[#2a9d8f] px-4 py-2 flex-1 justify-center">
+            {{ t("picker.mark_done") }}
+        </button>
+        <button onclick="document.getElementById('picker-dialog').close()"
+                class="neo-btn bg-white px-4 py-2 flex-1 justify-center">
+            {{ t("picker.not_now") }}
+        </button>
+    </div>
+</div>
+
+<div id="spin-data"
+     data-names="{{ all_names_json | e }}"
+     data-final="{{ activity.name | e }}"
+     data-result-title="{{ t('picker.result') | e }}"
+     data-result-sub="{{ t('picker.result_sub') | e }}"
+     style="display:none"></div>
+
+<script>
+(function() {
+    var data = document.getElementById('spin-data');
+    var names = JSON.parse(data.dataset.names);
+    var finalName = data.dataset.final;
+    var el = document.getElementById('spin-text');
+    var title = document.getElementById('picker-title');
+    var subtitle = document.getElementById('picker-subtitle');
+    var actions = document.getElementById('picker-actions');
+    var i = 0;
+    var total = 15 + Math.floor(Math.random() * 10);
+    var interval = setInterval(function() {
+        el.textContent = names[Math.floor(Math.random() * names.length)];
+        i++;
+        if (i >= total) {
+            clearInterval(interval);
+            el.textContent = finalName;
+            el.parentElement.classList.add('animate-pop');
+            title.textContent = data.dataset.resultTitle;
+            subtitle.textContent = data.dataset.resultSub;
+            actions.classList.remove('hidden');
+            actions.classList.add('flex');
+        }
+    }, 80);
+})();
+</script>

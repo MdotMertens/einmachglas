@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block body %}
+<header class="flex items-center justify-between px-4 py-3 border-b-[3px] border-[#1a1a1a] bg-white">
+    <div class="flex items-center gap-2 min-w-0">
+        <span class="font-bold text-sm truncate">{{ user.display_name }}</span>
+        {% if partner %}
+        <span class="text-[#e76f51] shrink-0">&hearts;</span>
+        <span class="font-bold text-sm truncate">{{ partner["display_name"] }}</span>
+        {% else %}
+        <span class="text-xs text-[#555] shrink-0">{{ t("pair.waiting") }}</span>
+        {% endif %}
+    </div>
+    <div class="flex gap-2 shrink-0">
+        <button onclick="showConfirm('{{ t('confirm.leave_pair') }}', null, function(){ htmx.ajax('POST', '/pair/leave', {target:'body'}) })"
+                class="neo-btn bg-white px-3 py-1 text-xs">
+            {{ t("btn.leave") }}
+        </button>
+        <a href="/logout" class="neo-btn bg-white px-3 py-1 text-xs">{{ t("btn.logout") }}</a>
+    </div>
+</header>
+
+<main class="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl sm:text-5xl font-black tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <span class="inline-block bg-[#e76f51] neo-tag px-2 py-1 -rotate-2">Ein</span>
+            <span class="inline-block bg-[#2a9d8f] neo-tag px-2 py-1 rotate-1">mach</span>
+            <span class="inline-block bg-[#e9c46a] neo-tag px-2 py-1 -rotate-1">glas</span>
+        </h1>
+    </div>
+
+    <div class="w-full max-w-lg mb-8">
+        <form hx-post="/activities"
+              hx-target="#activities-container"
+              hx-swap="innerHTML"
+              hx-on::after-request="if(event.detail.successful) this.reset()"
+              class="flex gap-3">
+            <input type="text"
+                   name="name"
+                   placeholder="{{ t('placeholder.activity') }}"
+                   required
+                   class="neo-input flex-1 text-base">
+            <button type="submit" class="neo-btn bg-[#2a9d8f] px-4 py-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                </svg>
+                {{ t("btn.add") }}
+            </button>
+        </form>
+    </div>
+
+    <div hx-ext="sse" sse-connect="/events">
+        <div id="activities-container"
+             class="w-full max-w-lg"
+             hx-get="/activities/list"
+             hx-trigger="sse:update"
+             hx-swap="innerHTML">
+            {% include "partials/activity_list.html" %}
+        </div>
+    </div>
+
+    <dialog id="picker-dialog" class="bg-white">
+        <div id="picker-content" class="p-6 min-w-[280px]"></div>
+    </dialog>
+
+    <!-- Confirm Dialog -->
+    <dialog id="confirm-dialog" class="bg-white">
+        <div class="p-6 min-w-[280px] text-center space-y-4">
+            <div class="inline-block bg-[#ef4444]/10 border-2 border-[#ef4444] p-3">
+                <svg class="w-8 h-8 text-[#ef4444] mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                </svg>
+            </div>
+            <p id="confirm-message" class="font-bold text-lg"></p>
+            <div class="flex gap-2 justify-center pt-2">
+                <button id="confirm-yes" class="neo-btn bg-[#ef4444] text-white px-5 py-2">
+                    {{ t("confirm.yes_delete") }}
+                </button>
+                <button onclick="document.getElementById('confirm-dialog').close()" class="neo-btn bg-white px-5 py-2">
+                    {{ t("confirm.cancel") }}
+                </button>
+            </div>
+        </div>
+    </dialog>
+</main>
+
+<script>
+var _confirmDeleteLabel = {{ t("confirm.yes_delete") | tojson }};
+var _confirmYesLabel = {{ t("confirm.yes") | tojson }};
+
+function showConfirm(message, deleteUrl, customAction) {
+    var dialog = document.getElementById('confirm-dialog');
+    var msg = document.getElementById('confirm-message');
+    var btn = document.getElementById('confirm-yes');
+
+    msg.textContent = message;
+    btn.textContent = deleteUrl ? _confirmDeleteLabel : _confirmYesLabel;
+
+    var newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.id = 'confirm-yes';
+
+    newBtn.addEventListener('click', function() {
+        dialog.close();
+        if (customAction) {
+            customAction();
+        } else if (deleteUrl) {
+            htmx.ajax('DELETE', deleteUrl, {target: '#activities-container', swap: 'innerHTML'});
+        }
+    });
+
+    dialog.showModal();
+}
+</script>
+{% endblock %}

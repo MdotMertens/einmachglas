@@ -1,0 +1,121 @@
+/* Neobrutalist utility classes */
+
+.neo-card {
+    border: 3px solid #1a1a1a;
+    box-shadow: 5px 5px 0px #1a1a1a;
+    background: white;
+}
+
+.neo-btn {
+    border: 2px solid #1a1a1a;
+    box-shadow: 3px 3px 0px #1a1a1a;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    transition: transform 0.1s, box-shadow 0.1s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.neo-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px #1a1a1a;
+}
+.neo-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #1a1a1a;
+}
+.neo-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 3px 3px 0px #1a1a1a;
+}
+
+.neo-input {
+    border: 2px solid #1a1a1a;
+    box-shadow: 3px 3px 0px #1a1a1a;
+    background: white;
+    outline: none;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+}
+.neo-input:focus {
+    box-shadow: 4px 4px 0px #1a1a1a;
+}
+
+.neo-tag {
+    border: 2px solid #1a1a1a;
+    box-shadow: 2px 2px 0px #1a1a1a;
+    display: inline-block;
+}
+
+.neo-item {
+    border: 2px solid #1a1a1a;
+    box-shadow: 3px 3px 0px #1a1a1a;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.neo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 5px 0px #1a1a1a;
+}
+
+.neo-checkbox {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid #1a1a1a;
+    background: white;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: grid;
+    place-content: center;
+}
+.neo-checkbox:checked {
+    background: #1a1a1a;
+}
+.neo-checkbox:checked::after {
+    content: "✓";
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Dialog */
+dialog {
+    border: 3px solid #1a1a1a;
+    box-shadow: 8px 8px 0px #1a1a1a;
+    padding: 0;
+    max-width: 28rem;
+    width: calc(100% - 2rem);
+}
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Spin animation for picker */
+@keyframes pop-in {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+    animation: pop-in 0.3s ease-out;
+}
+
+/* Done items */
+.done-item {
+    border: 2px solid rgba(26, 26, 26, 0.3);
+    box-shadow: 2px 2px 0px rgba(26, 26, 26, 0.25);
+    background: #f0ede6;
+    opacity: 0.75;
+}
+
+/* HTMX loading indicator */
+.htmx-request .htmx-indicator {
+    display: inline-block;
+}
+.htmx-indicator {
+    display: none;
+}

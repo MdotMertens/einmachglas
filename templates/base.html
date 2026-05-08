@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="{{ lang|default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einmachglas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="min-h-screen bg-[#faf7f2] text-[#1a1a1a] font-sans flex flex-col">
+    {% block body %}{% endblock %}
+
+    <!-- Language switcher -->
+    <footer class="py-4 text-center text-sm">
+        {% for l in supported_langs %}
+        {% if l == lang|default('en') %}
+        <span class="font-bold underline underline-offset-2 mx-1">{{ t("lang." + l) }}</span>
+        {% else %}
+        <a href="/lang/{{ l }}" class="mx-1 text-[#555] hover:text-[#1a1a1a] hover:underline underline-offset-2">{{ t("lang." + l) }}</a>
+        {% endif %}
+        {% endfor %}
+    </footer>
+</body>
+</html>

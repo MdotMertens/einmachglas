@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block body %}
+<header class="flex items-center justify-between px-4 py-3 border-b-[3px] border-[#1a1a1a] bg-white">
+    <div class="flex items-center gap-2">
+        <span class="font-bold text-sm">{{ user.display_name }}</span>
+    </div>
+    <a href="/logout" class="neo-btn bg-white px-3 py-1 text-xs">{{ t("btn.logout") }}</a>
+</header>
+
+<main class="flex-1 flex flex-col items-center justify-center px-4 py-12">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+            {{ t("pair.title") }}
+        </h1>
+        <p class="text-[#555] font-medium">
+            {{ t("pair.subtitle") }}
+        </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6 w-full max-w-2xl">
+        <div class="neo-card p-6">
+            <h2 class="font-black text-lg uppercase mb-1">{{ t("pair.start") }}</h2>
+            <p class="text-sm text-[#555] mb-4">{{ t("pair.start_desc") }}</p>
+            <div id="create-result">
+                <button hx-post="/pair/create"
+                        hx-target="#create-result"
+                        hx-swap="innerHTML"
+                        class="neo-btn bg-[#e76f51] px-4 py-2 w-full justify-center">
+                    {{ t("pair.generate") }}
+                </button>
+            </div>
+        </div>
+
+        <div class="neo-card p-6">
+            <h2 class="font-black text-lg uppercase mb-1">{{ t("pair.join") }}</h2>
+            <p class="text-sm text-[#555] mb-4">{{ t("pair.join_desc") }}</p>
+            <form hx-post="/pair/join"
+                  hx-target="#join-result"
+                  hx-swap="innerHTML"
+                  class="space-y-3">
+                <input type="text"
+                       name="code"
+                       placeholder="{{ t('pair.placeholder') }}"
+                       required
+                       maxlength="6"
+                       class="neo-input w-full text-center text-lg font-bold tracking-[0.15em] uppercase"
+                       autocomplete="off">
+                <button type="submit" class="neo-btn bg-[#2a9d8f] px-4 py-2 w-full justify-center">
+                    {{ t("pair.join_btn") }}
+                </button>
+            </form>
+            <div id="join-result"></div>
+        </div>
+    </div>
+</main>
+{% endblock %}

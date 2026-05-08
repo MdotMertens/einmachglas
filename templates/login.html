@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block body %}
+<main class="flex-1 flex flex-col items-center justify-center px-4">
+    <div class="text-center mb-10">
+        <h1 class="text-5xl sm:text-6xl font-black tracking-tight mb-2 flex items-center justify-center gap-3 flex-wrap">
+            <span class="inline-block bg-[#e76f51] neo-tag px-3 py-1 -rotate-2">Ein</span>
+            <span class="inline-block bg-[#2a9d8f] neo-tag px-3 py-1 rotate-1">mach</span>
+            <span class="inline-block bg-[#e9c46a] neo-tag px-3 py-1 -rotate-1">glas</span>
+        </h1>
+        <p class="text-[#555] font-medium mt-6 text-lg">
+            {{ t("tagline") }}
+            <span class="text-[#e76f51]">&hearts;</span>
+        </p>
+    </div>
+
+    <div class="neo-card p-0 max-w-sm w-full">
+        <!-- Tabs -->
+        <div class="flex border-b-[3px] border-[#1a1a1a]">
+            <button onclick="showTab('login')" id="tab-login"
+                    class="flex-1 py-3 font-bold uppercase text-sm text-center border-r-[3px] border-[#1a1a1a] transition-colors bg-[#e9c46a]">
+                {{ t("tab.signin") }}
+            </button>
+            <button onclick="showTab('register')" id="tab-register"
+                    class="flex-1 py-3 font-bold uppercase text-sm text-center transition-colors bg-white">
+                {{ t("tab.register") }}
+            </button>
+        </div>
+
+        <div class="p-6">
+            {% if error %}
+            <div class="bg-[#ef4444]/10 border-2 border-[#ef4444] p-3 mb-4 text-sm font-bold text-[#ef4444]">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Login form -->
+            <form id="form-login" action="/login" method="post" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-1">{{ t("label.username") }}</label>
+                    <input type="text" name="username" required autocomplete="username"
+                           class="neo-input w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-1">{{ t("label.password") }}</label>
+                    <input type="password" name="password" required autocomplete="current-password"
+                           class="neo-input w-full">
+                </div>
+                <button type="submit" class="neo-btn bg-[#5fa8d3] w-full py-2.5 justify-center">
+                    {{ t("btn.signin") }}
+                </button>
+            </form>
+
+            <!-- Register form -->
+            <form id="form-register" action="/register" method="post" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-1">{{ t("label.username") }}</label>
+                    <input type="text" name="username" required minlength="3" autocomplete="username"
+                           class="neo-input w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-1">{{ t("label.display_name") }}</label>
+                    <input type="text" name="display_name" required placeholder="{{ t('placeholder.display_name') }}"
+                           class="neo-input w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-1">{{ t("label.password") }}</label>
+                    <input type="password" name="password" required minlength="6" autocomplete="new-password"
+                           class="neo-input w-full">
+                </div>
+                <button type="submit" class="neo-btn bg-[#2a9d8f] w-full py-2.5 justify-center">
+                    {{ t("btn.register") }}
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+function showTab(tab) {
+    var loginForm = document.getElementById('form-login');
+    var registerForm = document.getElementById('form-register');
+    var loginTab = document.getElementById('tab-login');
+    var registerTab = document.getElementById('tab-register');
+
+    if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        loginTab.classList.replace('bg-white', 'bg-[#e9c46a]');
+        registerTab.classList.replace('bg-[#e9c46a]', 'bg-white');
+    } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        registerTab.classList.replace('bg-white', 'bg-[#e9c46a]');
+        loginTab.classList.replace('bg-[#e9c46a]', 'bg-white');
+    }
+}
+
+{% if tab == 'register' %}
+showTab('register');
+{% endif %}
+</script>
+{% endblock %}
